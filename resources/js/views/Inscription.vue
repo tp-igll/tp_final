@@ -93,8 +93,10 @@
                 prepend-icon="mdi-phone"
                 placeholder="Téléphone"
                 :error-messages="telephoneErrors"
-                :counter="12"
+                :counter="10"
                 required
+                
+                type="number"
                 @input="$v.telephone.$touch()"
                 @blur="$v.telephone.$touch()"
               ></v-text-field>
@@ -129,15 +131,15 @@
       telephone:{required, maxLength: maxLength(12)},
     },
 
-    data: vm => ({
+    data: () => ({
       name: '',
       email: '',
       prenom:'',
       adresse:'',
       telephone:'',
       date: new Date().toISOString().substr(0, 10),
-      dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
       menu1: false,
+      infos:[],
     }),
 
 
@@ -152,7 +154,7 @@
       telephoneErrors () {
         const errors = []
         if (!this.$v.telephone.$dirty) return errors
-        !this.$v.telephone.maxLength && errors.push('Le numéro de téléphone ne doit pas dépasser 12 caracteres.')
+        !this.$v.telephone.maxLength && errors.push('Le numéro de téléphone ne doit pas dépasser 10 chiffres.')
         !this.$v.telephone.required && errors.push('Le champ téléphone est obligatoire.')
         return errors
       },
@@ -188,13 +190,20 @@
 
     methods: {
       submit () {
-        console.log(this.$v);
-        axios.post('/inscription', this.vm).then(response => {
-          this.vm=({name: '' })
+        this.infos= [{
+          nom:this.name,
+          prenom:this.prenom,
+          num:this.telephone,
+          adresse:this.adresse,
+          date_naissance:this.dateFormatted
+        }]
+        var _this=this;
+        console.log(_this.infos)
+        axios.post('/inscription', _this.infos).then(response => {
+          _this.$router.push({name:''})
           console.log(response.data)
         })
         .catch(error=>console.log(error));
-        
       },
       formatDate (date) {
         if (!date) return null

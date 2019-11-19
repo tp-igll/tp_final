@@ -3,23 +3,67 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Http\Requests\EtudiantRequest;
 use App\Etudiant;
-use Carbon\Carbon;
+
 
 class EtudiantController extends Controller
 {
     /**********************MY FUNCTIONS********************/
     public function matricule(){
-        $date=Carbon::now()->toDateTimeString('y');
-        $matricule=$date.'/'.$Etudiant::count();
+        $rang=Etudiant::count()+1;
+        if (($rang>=1) && ($rang<10)) $matricule=date('y').'/000'.$rang;
+        else if (($rang>=10) && ($rang<99)) $matricule=date('y').'/00'.$rang;
+        else $matricule=date('y').'/0'.$rang;
+        return $matricule;
     }
     public function create_email($nom,$prenom) {
-        $date=Carbon::now()->toDateTimeString('y');
+        $date=date('y');
         $rang = ((int) $date) - 9+96 ;
-        return chr($rang).$prenom[1].'_'.$nom.'@esi.dz';
+        return chr($rang).$prenom[0].'_'.$nom.'@esi.dz';
     }
 
+    public function generer_section($niv){
+        switch ($niv) {
+            case 3:{
+                return chr(mt_rand(1,2)+64); // 1CS A Ou B
+            break;
+            }
+            case 4: {
+                $specialite=['Q','T','L']; //2cs SIQ,SIL Ou SIT
+                return $specialite[mt_rand(1,3)];
+            break;
+            }
+            case 5 :{
+            break; //3CS N'ont pas de section
+            }
+            default : {
+                return chr(mt_rand(1,3)+64);//1,2CP A,B OU C
+            break;
+            }
+        }
+    }
+    public function generer_groupe($niv,$sect){
+        switch ($niv) {
+            case 3: {
+                if ($sect=='A') return mt_rand(1,4);
+                else return mt_rand(1,4)+4;
+            break;
+            }
+            case 4:  {
+                return mt_rand(1,2);
+            break;
+            }
+            case 5 : {break;}
+            default : {
+                if ($sect=='A') return mt_rand(1,3);
+                else if ($sect=='B') return mt_rand(1,3)+3;
+                else if ($sect=='C') return mt_rand(1,3)+6;
+            break;
+            }
+        }
+
+    }
     /************** CRUD FUNCTIONS***************************/
     public function index() { //Récupère tous les étudiants dans un tableau $etudiants
         $etudiants = Etudiant::all(['nom','prenom','grp','email','date_naissance','adresse','matricule'])->toArray();
@@ -31,18 +75,23 @@ class EtudiantController extends Controller
     }
 
     public function store(EtudiantRequest $request) { //INSCRIT UN ETUDIANT DANS LA BDD
-        $etudiant = new Etudiant();
-        $etudiant->nom=$request->input('nom');
-        $etudiant->prenom=$request->input('prenom');
-        $etudiant->email=create_email($request->input('nom'),$request->input('prenom'));
-        $etudiant->matricule=matricule();
-        $etudiant->date_naissance=$request->input('date_naissance')->toDateTimeString('Y/m/d');
-        $etudiant->adresse=$request->input('adresse');
-        $etudiant->numero=$request->input('num');
-        $etudiant->save();
-        return view('res',$etudiant);
-        //return response($etudiant->jsonSerialize(), Response::HTTP_CREATED);
-      }
+        $infos=$request->input()['0'];
+        if (!(Etudiant::where('numero',$infos['num'])->first())) {
+            $etudiant = new Etudiant();
+            $etudiant->nom=$infos['nom'];
+            $etudiant->prenom=$infos['prenom'];
+            $etudiant->email=$this->create_email($infos['nom'],$infos['prenom']);
+            $etudiant->matricule=$this->matricule();
+            $etudiant->date_naissance=date('Y/m/d',strtotime($infos['date_naissance']));
+            $etudiant->adresse=$infos['adresse'];
+            $etudiant->numero=$infos['num'];
+            $etudiant->niv=mt_rand(1,5);
+            $etudiant->sect=$this->generer_section($etudiant->niv);
+            $etudiant->grp=$this->generer_groupe($etudiant->niv,$etudiant->sect);
+            $etudiant->save();
+        }
+        else return "existe";
+    }
 
     // edit etudiant
     public function edit($id)
