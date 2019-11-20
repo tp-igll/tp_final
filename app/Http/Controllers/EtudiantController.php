@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\EtudiantRequest;
 use App\Etudiant;
+use Symfony\Component\HttpFoundation\Response;
 
 
 class EtudiantController extends Controller
@@ -25,16 +26,16 @@ class EtudiantController extends Controller
 
     public function generer_section($niv){
         switch ($niv) {
-            case 3:{
+            case "1CS":{
                 return chr(mt_rand(1,2)+64); // 1CS A Ou B
             break;
             }
-            case 4: {
-                $specialite=['Q','T','L']; //2cs SIQ,SIL Ou SIT
-                return $specialite[mt_rand(1,3)];
+            case "2CS": {
+                $specialite=['SIQ','SIT','SIL']; //2cs SIQ,SIL Ou SIT
+                return $specialite[mt_rand(0,2)];
             break;
             }
-            case 5 :{
+            case "3CS" :{
             break; //3CS N'ont pas de section
             }
             default : {
@@ -45,16 +46,16 @@ class EtudiantController extends Controller
     }
     public function generer_groupe($niv,$sect){
         switch ($niv) {
-            case 3: {
+            case "1CS": {
                 if ($sect=='A') return mt_rand(1,4);
                 else return mt_rand(1,4)+4;
             break;
             }
-            case 4:  {
+            case "2CS":  {
                 return mt_rand(1,2);
             break;
             }
-            case 5 : {break;}
+            case "3CS": {break;}
             default : {
                 if ($sect=='A') return mt_rand(1,3);
                 else if ($sect=='B') return mt_rand(1,3)+3;
@@ -64,9 +65,13 @@ class EtudiantController extends Controller
         }
 
     }
+    public function generer_niveau(){
+        $niv=['1CP','2CP','1CS','2CS','3CS'];
+        return $niv[mt_rand(0,4)];
+    }
     /************** CRUD FUNCTIONS***************************/
     public function index() { //Récupère tous les étudiants dans un tableau $etudiants
-        $etudiants = Etudiant::all(['nom','prenom','grp','email','date_naissance','adresse','matricule'])->toArray();
+        $etudiants = Etudiant::all(['nom','prenom','grp','email','sect','niv','matricule'])->toArray();
         return $etudiants;
     }
 
@@ -82,10 +87,10 @@ class EtudiantController extends Controller
             $etudiant->prenom=$infos['prenom'];
             $etudiant->email=$this->create_email($infos['nom'],$infos['prenom']);
             $etudiant->matricule=$this->matricule();
-            $etudiant->date_naissance=date('Y/m/d',strtotime($infos['date_naissance']));
+            $etudiant->date_naissance=date('Y/d/m',strtotime($infos['date_naissance']));
             $etudiant->adresse=$infos['adresse'];
             $etudiant->numero=$infos['num'];
-            $etudiant->niv=mt_rand(1,5);
+            $etudiant->niv=$this->generer_niveau();
             $etudiant->sect=$this->generer_section($etudiant->niv);
             $etudiant->grp=$this->generer_groupe($etudiant->niv,$etudiant->sect);
             $etudiant->save();
@@ -100,16 +105,18 @@ class EtudiantController extends Controller
         return response(null, Response::HTTP_OK);
     }
 
-    public function update($id, Request $request) { //Modifie étudiant dont l'id = $id
+    public function update($matricule, Request $request) { //Modifie étudiant dont l'id = $id
+        $id=Etudiant::where('matricule',$matricule)->value('id');
         $etudiant = Etudiant::find($id);
         $etudiant->update($request->all());
         return response(null, Response::HTTP_OK);
     }
 
-    public function destroy ($id) {//Supprime un étudiant
+    public function destroy ($numero) {//Supprime un étudiant
+        $id=Etudiant::where('num',$numero)->value('id');
         $etudiant = Etudiant::find($id);
         $etudiant->delete();
 
-        return response(null, Response::HTTP_OK);
+        return "fi destroy";//new response(null, Response::HTTP_OK,null);
     }
 }

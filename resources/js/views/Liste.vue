@@ -27,7 +27,7 @@
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on }">
-            <v-btn color="primary" dark class="mb-133" v-on="on">Ajouter
+            <v-btn color="primary" dark class="mb-133" v-on="on" >Ajouter
                <v-icon right dark>mdi-account-plus</v-icon>
             </v-btn>
           </template>
@@ -38,30 +38,45 @@
 
             <v-card-text>
               <v-container>
-                <v-row>
+                <v-form v-model="validd"
+      :lazy-validation="lazy">
+                <v-row ref="form">
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.nom" label="Nom"></v-text-field>
+                    <v-text-field v-model="editedItem.nom" label="Nom" :rules="nameRules"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.prenom" label="Prénom"></v-text-field>
+                    <v-text-field v-model="editedItem.prenom" label="Prénom" :rules="prenomRules"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.email" label="Email"></v-text-field>
+                    <v-text-field v-model="editedItem.email" label="Email" :rules="emailRules"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.date_naissance" label="Date de naissance"></v-text-field>
+                    <v-text-field v-model="editedItem.niv" label="Niveau" :rules="NiveauRules"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.adresse" label="Adresse"></v-text-field>
+                    <v-text-field v-model="editedItem.sect" label="Section" :rules="NiveauRules"></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field v-model="editedItem.grp" label="Groupe" :disabled="true"></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field v-model="editedItem.matricule" label="Matricule" :rules="NiveauRules"></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field v-model="editedItem.date_naissance" label="Date de naissance" :disabled="true"></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field v-model="editedItem.adresse" label="Adresse" :rules="NiveauRules"></v-text-field>
                   </v-col>
                 </v-row>
+                </v-form>
               </v-container>
             </v-card-text>
 
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-3" text @click="close">Fermer</v-btn>
-              <v-btn color="blue darken-3" text @click="Sauvegarder">Sauvegarder</v-btn>
+              <v-btn color="blue darken-3" :disabled="!validd" text @click="save">Sauvegarder</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -81,13 +96,19 @@
                     <v-text-field v-model="editedItem.prenom" label="Prénom" :disabled="true"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
+                    <v-text-field v-model="editedItem.niv" label="Niveau" :disabled="true"></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
                     <v-text-field v-model="editedItem.email" label="Email" :disabled="true"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.date_naissance" label="Date de naissance" :disabled="true"></v-text-field>
+                    <v-text-field v-model="editedItem.sect" label="Section" :disabled="true"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.adresse" label="Adresse" :disabled="true"></v-text-field>
+                    <v-text-field v-model="editedItem.matricule" label="Matricule" :disabled="true"></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field v-model="editedItem.grp" label="Groupe" :disabled="true"></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -125,7 +146,10 @@
       </v-icon>
       
     </template>
-    
+    <v-progress-circular
+      indeterminate
+      color="primary"
+    ></v-progress-circular>
   </v-data-table>
 </template>
 
@@ -133,39 +157,57 @@
 <script>
   export default {
     data: () => ({
+      validd: false,
       dialog: false,
       dialogg: false,
       search: '',
+      nameRules: [
+        v => !!v || 'Le champ nom est obligatoire.',
+      ],
+      prenomRules: [
+        v => !!v || 'Le champ prénom est obligatoire.',
+      ],
+      emailRules: [
+        v => !!v || 'Le champ e-mail est obligatoire',
+        v => /.+@.+/.test(v) || 'Veuillez introduire une adresse e-mail valide.',
+      ],
+      NiveauRules: [
+        v => !!v || 'Ce champ est obligatoire.',
+      ],
       headers: [
         {
-          text: 'Nom',
+          text: 'Matricule',
           align: 'left',
           sortable: true,
-          value: 'nom',
+          value: 'matricule',
         },
+        { text: 'Nom', value: 'nom' },
         { text: 'Prénom', value: 'prenom' },
+        { text: 'Niveau', value: 'niv' },
+        { text: 'Section', value: 'sect' },
         { text: 'Groupe', value: 'grp' },
         { text: 'Email', value: 'email' },
-        { text: 'Date de naissance', value: 'date_naissance' },
-        { text: 'Adresse', value: 'adresse' },
-        { text: 'Matricule', value: 'adresse' },
         { text: 'Actions', value: 'action', sortable: false },
       ],
       Etudiants: [],
       editedIndex: -1,
       editedItem: {
-        nom: '',
-        prenom: '',
-        email: '',
-        date_naissance: '',
-        adresse: '',
+        Nom: '',
+        Prénom: '',
+        Niveau:'',
+        Email: '',
+        Section: '',
+        Adresse: '',
+        Matricule:'',
       },
       defaultItem: {
-        nom: '',
-        prenom: '',
-        email: '',
-        date_naissance: '',
-        adresse: '',
+        Nom: '',
+        Prénom: '',
+        Niveau:'',
+        Email: '',
+        Section: '',
+        Adresse: '',
+        Matricule:'',
       },
     }),
 
@@ -184,7 +226,6 @@
     created () {
       this.initialize()
     },
-    
 
     methods: {
       initialize () {
@@ -192,7 +233,7 @@
           this.Etudiants = response.data
         });
       },
-      
+
       editItem (item) {
         this.editedIndex = this.Etudiants.indexOf(item)
         this.editedItem = Object.assign({}, item)
@@ -202,6 +243,9 @@
       deleteItem (item) {
         const index = this.Etudiants.indexOf(item)
         confirm('Voulez vous vraiment supprimer cet élément?') && this.Etudiants.splice(index, 1)
+        axios.post('/destroy'+item.numero).then(response => {
+          console.log(response.data)
+        });
       },
 
       showitem(item){
@@ -219,6 +263,7 @@
       },
 
       save () {
+
         if (this.editedIndex > -1) {
           Object.assign(this.Etudiants[this.editedIndex], this.editedItem)
         } else {

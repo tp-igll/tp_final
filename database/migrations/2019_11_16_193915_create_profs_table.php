@@ -14,7 +14,7 @@ class CreateProfsTable extends Migration
     public function up()
     {
         Schema::create('profs', function (Blueprint $table) {
-            $table->bigIncrements('id_prof');
+            $table->bigIncrements('id');
             $table->string('nom')->collation('utf8_general_ci');
             $table->string('prenom')->collation('utf8_general_ci');
             $table->string('email')->collation('utf8_general_ci');

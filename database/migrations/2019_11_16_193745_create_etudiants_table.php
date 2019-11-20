@@ -14,18 +14,18 @@ class CreateEtudiantsTable extends Migration
     public function up()
     {
         Schema::create('etudiants', function (Blueprint $table) {
-            $table->bigIncrements('id_etud');
+            $table->bigIncrements('id');
             $table->string('nom')->collation('utf8_general_ci');
             $table->string('prenom')->collation('utf8_general_ci');
             $table->string('email')->nullable()->collation('utf8_general_ci');
             $table->date('date_naissance');
             $table->text('adresse')->collation('utf8_general_ci');
-            $table->integer('numero');
+            $table->string('numero');
             $table->string('matricule')->collation('utf8_general_ci');
-            $table->integer('niv')->default('1');
+            $table->string('niv');
             $table->integer('grp')->nullable();
-            $table->char('sect',1)->nullable()->collation('utf8_general_ci');
-            $table->timestamps();
+            $table->string('sect')->nullable()->collation('utf8_general_ci');
+            $table->timestamps(); //never take them off
         });
     }
 

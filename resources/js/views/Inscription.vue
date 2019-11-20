@@ -33,18 +33,6 @@
                 placeholder="Prénom"
               ></v-text-field>
             </v-flex>
-
-            <v-flex xs12>
-              <v-text-field
-               v-model="email"
-                :error-messages="emailErrors"
-                required
-                @input="$v.email.$touch()"
-                @blur="$v.email.$touch()"
-                prepend-icon="mdi-email"
-                placeholder="Email"
-              ></v-text-field>
-            </v-flex>
             
              <v-flex xs12>
   
@@ -118,7 +106,7 @@
 
 <script>
  import { validationMixin } from 'vuelidate'
-  import { required, maxLength, email } from 'vuelidate/lib/validators'
+  import { required, maxLength } from 'vuelidate/lib/validators'
 
   export default {
     mixins: [validationMixin],
@@ -126,20 +114,18 @@
     validations: {
       name: { required },
       prenom: { required },
-      email: { required, email },
       adresse:{required},
       telephone:{required, maxLength: maxLength(12)},
     },
 
     data: () => ({
       name: '',
-      email: '',
       prenom:'',
       adresse:'',
       telephone:'',
       date: new Date().toISOString().substr(0, 10),
+    
       menu1: false,
-      infos:[],
     }),
 
 
@@ -171,13 +157,6 @@
         const errors = []
         if (!this.$v.prenom.$dirty) return errors
         !this.$v.prenom.required && errors.push('Le champ prénom est obligatoire.')
-        return errors
-      },
-      emailErrors () {
-        const errors = []
-        if (!this.$v.email.$dirty) return errors
-        !this.$v.email.email && errors.push('Veuillez introduire une adresse e-mail valide.')
-        !this.$v.email.required && errors.push('Le champ e-mail est obligatoire.')
         return errors
       },
 
