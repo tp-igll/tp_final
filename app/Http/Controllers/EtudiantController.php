@@ -72,7 +72,7 @@ class EtudiantController extends Controller
     /************** CRUD FUNCTIONS***************************/
     public function index() { //Récupère tous les étudiants dans un tableau $etudiants
         $etudiants = Etudiant::all(['nom','prenom','grp','email','sect','niv','matricule'])->toArray();
-        $etudiants_tout=Etudiant::all(['nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse'])->toArray();
+        $etudiants_tout=Etudiant::all(['nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse','numero'])->toArray();
         return array('consultation'=>$etudiants,'form'=>$etudiants_tout);
     }
 
@@ -99,12 +99,6 @@ class EtudiantController extends Controller
         else return "existe";
     }
 
-    // edit etudiant
-    public function edit($id)
-    {
-        $etudiant = Etudiant::find($id);
-        return response(null, Response::HTTP_OK);
-    }
 
     public function update($matricule, Request $request) { //Modifie étudiant dont l'id = $id
         $id=Etudiant::where('matricule',$matricule)->value('id');
@@ -115,8 +109,8 @@ class EtudiantController extends Controller
 
     public function destroy ($numero) {//Supprime un étudiant
         $id=Etudiant::where('num',$numero)->value('id');
-        $etudiant = Etudiant::find($id);
-        $etudiant->delete();
+        $etudiant = Etudiant::destroy($id);
+        //$etudiant->delete();
 
         return "fi destroy";//new response(null, Response::HTTP_OK,null);
     }

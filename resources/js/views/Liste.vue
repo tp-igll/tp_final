@@ -68,6 +68,9 @@
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field v-model="editedItem.adresse" label="Adresse" :disabled="true" :rules="NiveauRules"></v-text-field>
                   </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field v-model="editedItem.numero" label="Numero de téléphone" :rules="NiveauRules"></v-text-field>
+                  </v-col>
                 </v-row>
                 </v-form>
               </v-container>
@@ -115,6 +118,9 @@
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field v-model="editedItem.adresse" label="Adresse" :disabled="true" :rules="NiveauRules"></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field v-model="editedItem.numero" label="Numéro de téléphone" :disabled="true" :rules="NiveauRules"></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -207,6 +213,7 @@
         matricule:'',
         grp:'',
         date_naissance:'',
+        numero:'',
       },
       Etudiants_tout: [],
       defaultItem: {
@@ -219,6 +226,7 @@
         matricule:'',
         grp:'',
         date_naissance:'',
+        numero:'',
       },
     }),
 
@@ -256,7 +264,8 @@
       deleteItem (item) {
         const index = this.Etudiants.indexOf(item)
         confirm('Voulez vous vraiment supprimer cet élément?') && this.Etudiants.splice(index, 1)
-        axios.post('/destroy'+item.numero).then(response => {
+        alert(item.numero)
+        axios.delete('/destroy/${item.numero}').then(response => {
           console.log(response.data)
         });
       },
