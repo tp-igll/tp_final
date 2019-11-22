@@ -72,7 +72,8 @@ class EtudiantController extends Controller
     /************** CRUD FUNCTIONS***************************/
     public function index() { //Récupère tous les étudiants dans un tableau $etudiants
         $etudiants = Etudiant::all(['nom','prenom','grp','email','sect','niv','matricule'])->toArray();
-        return $etudiants;
+        $etudiants_tout=Etudiant::all(['nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse'])->toArray();
+        return array('consultation'=>$etudiants,'form'=>$etudiants_tout);
     }
 
     public function create() {

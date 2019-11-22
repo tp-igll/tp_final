@@ -1,7 +1,7 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="Etudiants"
+    :items="Etudiants_tout"
     :search="search"
     sort-by="dessert"
     class="my-5 elevation-5"
@@ -48,7 +48,7 @@
                     <v-text-field v-model="editedItem.prenom" label="Prénom" :rules="prenomRules"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.email" label="Email" :rules="emailRules"></v-text-field>
+                    <v-text-field v-model="editedItem.email" label="Email" :disabled="true" :rules="emailRules"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field v-model="editedItem.niv" label="Niveau" :rules="NiveauRules"></v-text-field>
@@ -57,16 +57,16 @@
                     <v-text-field v-model="editedItem.sect" label="Section" :rules="NiveauRules"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.grp" label="Groupe" :disabled="true"></v-text-field>
+                    <v-text-field v-model="editedItem.grp" label="Groupe" ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.matricule" label="Matricule" :rules="NiveauRules"></v-text-field>
+                    <v-text-field v-model="editedItem.matricule" label="Matricule" :disabled="true" :rules="NiveauRules"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field v-model="editedItem.date_naissance" label="Date de naissance" :disabled="true"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.adresse" label="Adresse" :rules="NiveauRules"></v-text-field>
+                    <v-text-field v-model="editedItem.adresse" label="Adresse" :disabled="true" :rules="NiveauRules"></v-text-field>
                   </v-col>
                 </v-row>
                 </v-form>
@@ -109,6 +109,12 @@
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field v-model="editedItem.grp" label="Groupe" :disabled="true"></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field v-model="editedItem.date_naissance" label="Date de naissance" :disabled="true"></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field v-model="editedItem.adresse" label="Adresse" :disabled="true" :rules="NiveauRules"></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -192,22 +198,27 @@
       Etudiants: [],
       editedIndex: -1,
       editedItem: {
-        Nom: '',
-        Prénom: '',
-        Niveau:'',
-        Email: '',
-        Section: '',
-        Adresse: '',
-        Matricule:'',
+        nom: '',
+        prenom: '',
+        niv:'',
+        email: '',
+        sect: '',
+        adresse: '',
+        matricule:'',
+        grp:'',
+        date_naissance:'',
       },
+      Etudiants_tout: [],
       defaultItem: {
-        Nom: '',
-        Prénom: '',
-        Niveau:'',
-        Email: '',
-        Section: '',
-        Adresse: '',
-        Matricule:'',
+        nom: '',
+        prenom: '',
+        niv:'',
+        email: '',
+        sect: '',
+        adresse: '',
+        matricule:'',
+        grp:'',
+        date_naissance:'',
       },
     }),
 
@@ -230,7 +241,9 @@
     methods: {
       initialize () {
         axios.get('/liste').then(response => {
-          this.Etudiants = response.data
+          this.Etudiants = response.data['consultation']
+          this.Etudiants_tout = response.data['form']
+          console.log(this.Etudiants_tout)
         });
       },
 
