@@ -95,23 +95,24 @@ class EtudiantController extends Controller
             $etudiant->sect=$this->generer_section($etudiant->niv);
             $etudiant->grp=$this->generer_groupe($etudiant->niv,$etudiant->sect);
             $etudiant->save();
+            return response(null, Response::HTTP_CREATED);
         }
-        else return "existe";
+        else return response(null, Response::HTTP_IM_USED); //Existe déjà
     }
 
 
-    public function update($matricule, Request $request) { //Modifie étudiant dont l'id = $id
-        $id=Etudiant::where('matricule',$matricule)->value('id');
+    public function update($numero, EtudiantRequest $request) { //Modifie étudiant dont l'id = $id
+        $id=Etudiant::where('numero',$numero)->value('id');
         $etudiant = Etudiant::find($id);
         $etudiant->update($request->all());
-        return response(null, Response::HTTP_OK);
+        return response(null, Response::HTTP_MODIFIED);
     }
+
 
     public function destroy ($numero) {//Supprime un étudiant
-        $id=Etudiant::where('num',$numero)->value('id');
+        $id=Etudiant::where('numero',$numero)->value('id');
         $etudiant = Etudiant::destroy($id);
-        //$etudiant->delete();
-
-        return "fi destroy";//new response(null, Response::HTTP_OK,null);
+        return response(null, Response::HTTP_OK);
     }
 }
+

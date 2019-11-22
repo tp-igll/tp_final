@@ -256,16 +256,15 @@
       },
 
       editItem (item) {
-        this.editedIndex = this.Etudiants.indexOf(item)
+        this.editedIndex = this.Etudiants_tout.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
 
       deleteItem (item) {
         const index = this.Etudiants.indexOf(item)
-        confirm('Voulez vous vraiment supprimer cet élément?') && this.Etudiants.splice(index, 1)
-        alert(item.numero)
-        axios.delete('/destroy/${item.numero}').then(response => {
+        confirm('Voulez vous vraiment supprimer cet élément?') && this.Etudiants_tout.splice(index, 1)
+        axios.delete('/destroy/' + item.numero).then(response => {
           console.log(response.data)
         });
       },
@@ -287,8 +286,15 @@
       save () {
 
         if (this.editedIndex > -1) {
-          Object.assign(this.Etudiants[this.editedIndex], this.editedItem)
+          var numero=this.editedItem.numero
+          console.log(numero)
+          console.log(this.Etudiants_tout[this.editedIndex])
+          Object.assign(this.Etudiants_tout[this.editedIndex], this.editedItem)
+          axios.put('/update/' + numero,this.editedItem).then(response => {
+          console.log(response.data)
+        });
         } else {
+          alert("LE")
           this.Etudiants.push(this.editedItem)
         }
         this.close()
