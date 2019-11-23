@@ -36,7 +36,9 @@ class EtudiantController extends Controller
             break;
             }
             case "3CS" :{
-            break; //3CS N'ont pas de section
+                $specialite=['SIQ','SIT','SIL']; //2cs SIQ,SIL Ou SIT
+                return $specialite[mt_rand(0,2)];
+            break;
             }
             default : {
                 return chr(mt_rand(1,3)+64);//1,2CP A,B OU C
@@ -55,7 +57,10 @@ class EtudiantController extends Controller
                 return mt_rand(1,2);
             break;
             }
-            case "3CS": {break;}
+            case "3CS": {
+                return mt_rand(1,2);
+            break;
+            }
             default : {
                 if ($sect=='A') return mt_rand(1,3);
                 else if ($sect=='B') return mt_rand(1,3)+3;
