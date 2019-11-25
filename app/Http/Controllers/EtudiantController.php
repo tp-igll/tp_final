@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\EtudiantRequest;
 use App\Etudiant;
 use Symfony\Component\HttpFoundation\Response;
+use App\User;
+use App\Prof;
 
 
 class EtudiantController extends Controller
@@ -75,10 +77,30 @@ class EtudiantController extends Controller
         return $niv[mt_rand(0,4)];
     }
     /************** CRUD FUNCTIONS***************************/
-    public function index() { //Récupère tous les étudiants dans un tableau $etudiants
-        $etudiants = Etudiant::all(['nom','prenom','grp','email','sect','niv','matricule'])->toArray();
-        $etudiants_tout=Etudiant::all(['nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse','numero'])->toArray();
-        return array('consultation'=>$etudiants,'form'=>$etudiants_tout);
+    public function index($id) { //Récupère tous les étudiants dans un tableau $etudiants
+        $type=User::where('id',$id)->value('type');
+        //if ($type!=false){
+            switch ($type) {
+                case 0: {//Cas d'admin
+                    $etudiants = Etudiant::all(['nom','prenom','grp','email','sect','niv','matricule'])->toArray();
+                    $etudiants_tout=Etudiant::all(['nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse','numero'])->toArray();
+                break;
+                } 
+                case 1: {//Cas d'un prof
+                    $email=User::where('id',$id)->value('email');
+                    $liste_groupes=Prof::where('email',$email)->value('liste_grp');
+                    $liste_sect=Prof::where('email',$email)->value('liste_sect');
+                    $etudiants=Etudiant::where([
+                        ['sect',$liste_sect],
+                        ['grp',$liste_groupes],
+                    ])->get(['nom','prenom','grp','email','sect','niv','matricule'])->toArray();
+                    $etudiants_tout=Etudiant::where('grp',$liste_groupes)->get(['nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse','numero'])->toArray();
+                }
+    
+            }
+            return array('consultation'=>$etudiants,'form'=>$etudiants_tout);
+        //}
+        
     }
 
     public function create() {

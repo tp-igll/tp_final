@@ -248,7 +248,8 @@
 
     methods: {
       initialize () {
-        axios.get('/liste').then(response => {
+        var id=3;
+        axios.get('/liste/'+id).then(response => {
           this.Etudiants = response.data['consultation']
           this.Etudiants_tout = response.data['form']
           console.log(this.Etudiants_tout)
