@@ -4,24 +4,25 @@ namespace Tests\Unit;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use app\Etudiant;
+use App\Etudiant;
 //$this->assertTrue(true);
 
-class ExampleTest extends TestCase
+class EtudiantTest extends TestCase
 {
-    use RefreshDatabase;
-    
+    /**************Les tests d'inscription************/
     /** @test */
     public function un_etudiant_peut_etre_inscrit_par_un_formulaire()
     {
-        $response=$this->post('/inscription',[
+        $info=[
             'nom'=>'mouri',
             'prenom'=>'samy',
             'date_naissance'=>'05/03/2002',
             'adresse'=>'reghaia rouiba',
-            'numero'=>'0555223311'
-        ]);
+            'num'=>'0555223311'
+        ];
+        $response=$this->post('/inscription',$info);
         $this->assertCount(Etudiant::count(),Etudiant::all());
-        
+        //$response->assertStatus(201);
+              
     }
 }

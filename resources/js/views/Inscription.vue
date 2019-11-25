@@ -77,6 +77,7 @@
             </v-flex>
             <v-flex xs12>
               <v-text-field
+              
                 v-model="telephone"
                 prepend-icon="mdi-phone"
                 placeholder="Téléphone"
@@ -84,6 +85,7 @@
                 :counter="10"
                 required
                 
+  single-line
                 type="number"
                 @input="$v.telephone.$touch()"
                 @blur="$v.telephone.$touch()"
@@ -100,10 +102,36 @@
         </v-card-actions>
         </v-form>
       </v-card>
+      <v-alert 
+      border="top"
+      colored-border
+      type="error"
+      elevation="5"
+       v-model="alert">
+      Vous devez remplir tout les champs!
+    </v-alert>
+      <v-alert 
+      border="top"
+      colored-border
+      type="success"
+      elevation="5"
+       v-model="alertt">
+      inscito mli7!
+    </v-alert>
+    
 </div>
 
 </template>
-
+<style>
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
+}
+</style>
 <script>
  import { validationMixin } from 'vuelidate'
   import { required, maxLength } from 'vuelidate/lib/validators'
@@ -124,7 +152,8 @@
       adresse:'',
       telephone:'',
       date: new Date().toISOString().substr(0, 10),
-    
+      alert:false,
+      alertt:false,
       menu1: false,
     }),
 
@@ -169,13 +198,14 @@
 
     methods: {
       submit () {
-        this.infos= [{
+        this.$v.$touch()
+        this.infos= {
           nom:this.name,
           prenom:this.prenom,
           num:this.telephone,
           adresse:this.adresse,
           date_naissance:this.dateFormatted
-        }]
+        }
         var _this=this;
         console.log(_this.infos)
         axios.post('/inscription', _this.infos).then(response => {
@@ -183,7 +213,16 @@
           console.log(response.data)
         })
         .catch(error=>console.log(error));
+        if(this.name=='' || this.prenom=='' || this.adresse=='' || this.telephone=='' || this.dateFormatted==''){
+          this.alert=true
+          this.alertt=false
+        }
+        else{
+          this.alert=false
+          this.alertt=true
+        }
       },
+
       formatDate (date) {
         if (!date) return null
 
