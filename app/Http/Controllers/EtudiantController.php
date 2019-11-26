@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\EtudiantRequest;
 use App\Etudiant;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Validator;
 
 
 class EtudiantController extends Controller
@@ -141,29 +142,29 @@ class EtudiantController extends Controller
      * 
      */
     public function store(EtudiantRequest $request) { //INSCRIT UN ETUDIANT DANS LA BDD
-        $validator = Validator::make($request->all(),$request>rules())
-        if($validator->fails()) return $request->messages();
+        $validator = Validator::make($request->all(),$request->rules(),$request->messages());
+        if ($validator->fails()) return $validator->errors();
         else {
-            $etudiant = new Etudiant();
-            $etudiant->nom=$request->input('nom');
-            $etudiant->prenom=$request->input('prenom');
-            $etudiant->email=$this->create_email($request->input('nom'),$request->input('prenom'));
-            $etudiant->matricule=$this->matricule();
-            $etudiant->date_naissance=date('Y/d/m',strtotime($request->input('date_naissance')));
-            $etudiant->adresse=$request->input('adresse');
-            $etudiant->numero=$request->input('num');
-            $etudiant->niv=$this->generer_niveau();
-            $etudiant->sect=$this->generer_section($etudiant->niv);
-            $etudiant->grp=$this->generer_groupe($etudiant->niv,$etudiant->sect);
-            $etudiant->save();
-            return response(null, Response::HTTP_CREATED); //Status_code = 201
-        }
-        //if (!(Etudiant::where('numero',$request->input('num'))->first())) {
-            
-        }
-        //else return response(null, Response::HTTP_IM_USED); //Existe déjà //Status_code = 226
+            if (!(Etudiant::where('numero',$request->input('num'))->first())) {
+                $etudiant = new Etudiant();
+                $etudiant->nom=$request->input('nom');
+                $etudiant->prenom=$request->input('prenom');
+                $etudiant->email=$this->create_email($request->input('nom'),$request->input('prenom'));
+                $etudiant->matricule=$this->matricule();
+                $etudiant->date_naissance=date('Y/d/m',strtotime($request->input('date_naissance')));
+                $etudiant->adresse=$request->input('adresse');
+                $etudiant->numero=$request->input('num');
+                $etudiant->niv=$this->generer_niveau();
+                $etudiant->sect=$this->generer_section($etudiant->niv);
+                $etudiant->grp=$this->generer_groupe($etudiant->niv,$etudiant->sect);
+                $etudiant->save();
+                return response(null, Response::HTTP_CREATED); //Status_code = 201
+                //return $validator->errors();
+            }
+            else return response(null, Response::HTTP_IM_USED); //Existe déjà //Status_code = 226
+        }   
     }
-
+    
 
     /**
      * La fonction update permet de modifier les données d'un étudiant

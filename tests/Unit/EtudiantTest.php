@@ -18,7 +18,7 @@ class EtudiantTest extends TestCase
             'prenom'=>'zakaria',
             'date_naissance'=>'05/04/2002',
             'adresse'=>'reghaia rouiba',
-            'num'=>'0555223314'
+            'num'=>'0555223315'
         ];
         $response=$this->post('/inscription',$info);
         $this->assertCount(Etudiant::count(),Etudiant::all());
@@ -36,7 +36,6 @@ class EtudiantTest extends TestCase
             'num'=>'0555223311'
         ];
         $response=$this->post('/inscription',$info);
-        $this->assertCount(Etudiant::count(),Etudiant::all());
         $response->assertStatus(226);
     }
 
@@ -51,7 +50,6 @@ class EtudiantTest extends TestCase
             'num'=>'0555223312'
         ];
         $response=$this->post('/inscription',$info);
-        $this->assertCount(Etudiant::count(),Etudiant::all());
-        $response->assertStatus(201);
+        $response->assertJson($info);
     }
 }
