@@ -11,6 +11,11 @@ class EtudiantTest extends TestCase
 {
     /**************Les tests d'inscription************/
     /** @test */
+    /**
+     * un_etudiant_peut_etre_inscrit_par_un_formulaire
+     *
+     * @return void
+     */
     public function un_etudiant_peut_etre_inscrit_par_un_formulaire()
     {
         $info=[
