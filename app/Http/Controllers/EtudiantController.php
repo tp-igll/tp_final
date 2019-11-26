@@ -28,7 +28,7 @@ class EtudiantController extends Controller
      * La fonction create_email crée un e-mail pour un étudiant lors de l'inscription 
      * @param $nom le nom de l'étudiant
      * @param $prenom prénom de l'étudiant
-     * @return $email
+     * @return $email l'émail de l'étudiant
      */
 
     public function create_email($nom,$prenom) {
@@ -42,7 +42,7 @@ class EtudiantController extends Controller
      *
      * @param  $niv Le niveau de l'étudiant
      *
-     * @return $section
+     * @return $section la section de l'étudiant
      */
     public function generer_section($niv){
         switch ($niv) {
@@ -67,10 +67,10 @@ class EtudiantController extends Controller
     /**
      *La fonction generer_groupe affecte aléatoirement un étudiant à son groupe suivant son niveau et sa section 
      *
-     * @param  $niv 
-     * @param  $sect gjguhiu
+     * @param  $niv Le niveau de l'étudiant
+     * @param  $sect La section de l'étudiant
      *
-     * @return $groupe
+     * @return $groupe Le groupe de l'étudiant
      */
     public function generer_groupe($niv,$sect){
         switch ($niv) {
@@ -96,7 +96,7 @@ class EtudiantController extends Controller
     /**
      *La fonction generer_niveau génère un niveau a un étudiant d'une manière aléatoire
      *
-     * @return $niveau
+     * @return $niveau Le niveau de l'étudiant
      */
     public function generer_niveau(){
         $niv=['1CP','2CP','1CS','2CS','3CS'];
@@ -106,7 +106,7 @@ class EtudiantController extends Controller
     /**
      * La fonction index récupère tous les étudiants dans un tableau 
      *
-     * @return $etudiants
+     * @return $etudiants Tableau qui contient la liste d'étudiants
      */
     public function index($id) { //Récupère tous les étudiants dans un tableau $etudiants
         $type=User::where('id',$id)->value('type');
@@ -137,7 +137,7 @@ class EtudiantController extends Controller
     /**
      * La fonction store inscrit un étudiant dans la base de données
      *
-     * @param  $request
+     * @param  $request Les données (informations) de l'étudiant
      *
      * 
      */
@@ -169,8 +169,8 @@ class EtudiantController extends Controller
     /**
      * La fonction update permet de modifier les données d'un étudiant
      *
-     * @param  $numero
-     * @param  $request
+     * @param  $numero Le numero de l'étudiant
+     * @param  $request Les nouvelles données de l'étudiant
      *
      * 
      */
@@ -185,7 +185,7 @@ class EtudiantController extends Controller
     /**
      * La fonction destroy permet de supprimer un étudiants de la base de données
      *
-     * @param   $numero
+     * @param   $numero Le numéro de l'étudiant
      *
      * 
      */
