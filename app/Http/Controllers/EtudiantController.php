@@ -68,7 +68,7 @@ class EtudiantController extends Controller
      *La fonction generer_groupe affecte aléatoirement un étudiant à son groupe suivant son niveau et sa section 
      *
      * @param  $niv 
-     * @param  $sect
+     * @param  $sect gjguhiu
      *
      * @return $groupe
      */
