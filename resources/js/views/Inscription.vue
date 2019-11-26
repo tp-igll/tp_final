@@ -108,7 +108,7 @@
       type="error"
       elevation="5"
        v-model="alert">
-      Vous devez remplir tout les champs!
+      Veuillez remplir tous les champs!
     </v-alert>
       <v-alert 
       border="top"
@@ -116,7 +116,7 @@
       type="success"
       elevation="5"
        v-model="alertt">
-      inscito mli7!
+      Inscription avec succès !
     </v-alert>
     
 </div>

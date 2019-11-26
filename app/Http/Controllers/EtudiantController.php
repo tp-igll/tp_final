@@ -24,10 +24,10 @@ class EtudiantController extends Controller
     }
 
     /**
-     * La fonction create_email crée un email pour un étudiant lors de l'inscription 
+     * La fonction create_email crée un e-mail pour un étudiant lors de l'inscription 
      * @param $nom le nom de l'étudiant
-     * @param $prenom prénom de léetdjkhjh
-     *@return $email
+     * @param $prenom prénom de l'étudiant
+     * @return $email
      */
 
     public function create_email($nom,$prenom) {
@@ -37,9 +37,9 @@ class EtudiantController extends Controller
     }
 
     /**
-     * La fonction generer_section génère une section pour un étudiant d'une façon aléatoire et selon son niveau
+     * La fonction generer_section génère alétoirement une section pour un étudiant selon son niveau
      *
-     * @param  $niv
+     * @param  $niv Le niveau de l'étudiant
      *
      * @return $section
      */
@@ -64,9 +64,9 @@ class EtudiantController extends Controller
         }
     }
     /**
-     *La fonction generer_groupe génère un groupe a un étudiant suivant son niveau et sa section et selon une manière aléatoire
+     *La fonction generer_groupe affecte aléatoirement un étudiant à son groupe suivant son niveau et sa section 
      *
-     * @param  $niv
+     * @param  $niv 
      * @param  $sect
      *
      * @return $groupe
@@ -141,7 +141,9 @@ class EtudiantController extends Controller
      * 
      */
     public function store(EtudiantRequest $request) { //INSCRIT UN ETUDIANT DANS LA BDD
-        if (!(Etudiant::where('numero',$request->input('num'))->first())) {
+        $validator = Validator::make($request->all(),$request>rules())
+        if($validator->fails()) return $request->messages();
+        else {
             $etudiant = new Etudiant();
             $etudiant->nom=$request->input('nom');
             $etudiant->prenom=$request->input('prenom');
@@ -154,9 +156,12 @@ class EtudiantController extends Controller
             $etudiant->sect=$this->generer_section($etudiant->niv);
             $etudiant->grp=$this->generer_groupe($etudiant->niv,$etudiant->sect);
             $etudiant->save();
-            return response(null, Response::HTTP_CREATED);
+            return response(null, Response::HTTP_CREATED); //Status_code = 201
         }
-        else return response(null, Response::HTTP_IM_USED); //Existe déjà
+        //if (!(Etudiant::where('numero',$request->input('num'))->first())) {
+            
+        }
+        //else return response(null, Response::HTTP_IM_USED); //Existe déjà //Status_code = 226
     }
 
 
