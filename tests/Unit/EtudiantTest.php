@@ -20,6 +20,11 @@ class EtudiantTest extends TestCase
         ];
     }
     /** @test */
+    /**
+     * un_etudiant_peut_etre_inscrit_par_un_formulaire
+     *
+     * @return void
+     */
     public function un_etudiant_peut_etre_inscrit_par_un_formulaire()
     {
         $response=$this->post('/inscription',array_merge($this->data(),['num'=>'0555273367']));
