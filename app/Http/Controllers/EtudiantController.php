@@ -38,7 +38,7 @@ class EtudiantController extends Controller
     }
 
     /**
-     * La fonction generer_section génère alétoirement une section pour un étudiant selon son niveau
+     * La fonction generer_section génère aléatoirement une section pour un étudiant selon son niveau
      *
      * @param  $niv Le niveau de l'étudiant
      *
@@ -56,7 +56,9 @@ class EtudiantController extends Controller
             break;
             }
             case "3CS" :{
-            break; //3CS N'ont pas de section
+                $specialite=['SIQ','SIT','SIL']; //2cs SIQ,SIL Ou SIT
+                return $specialite[mt_rand(0,2)];
+            break; 
             }
             default : {
                 return chr(mt_rand(1,3)+64);//1,2CP A,B OU C
@@ -118,13 +120,22 @@ class EtudiantController extends Controller
             } 
             case 1: {//Cas d'un prof
                 $email=User::where('id',$id)->value('email');
-                $liste_groupes=Prof::where('email',$email)->value('liste_grp');
-                $liste_sect=Prof::where('email',$email)->value('liste_sect');
-                $etudiants=Etudiant::where([
-                    ['sect',$liste_sect],
-                    ['grp',$liste_groupes],
-                ])->get(['nom','prenom','grp','email','sect','niv','matricule'])->toArray();
-                $etudiants_tout=Etudiant::where('grp',$liste_groupes)->get(['nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse','numero'])->toArray();
+                if (!($email)) return response(null,Response::HTTP_NOT_FOUND);
+                else {
+                    $liste_groupes=Prof::where('email',$email)->value('liste_grp');
+                    if (!($liste_groupes)) return response(null,Response::HTTP_NOT_FOUND);
+                    $liste_sect=Prof::where('email',$email)->value('liste_sect');
+                    $etudiants=Etudiant::where([
+                       ['sect',$liste_sect],
+                       ['grp',$liste_groupes],
+                    ])->get(['nom','prenom','grp','email','sect','niv','matricule'])->toArray();
+                    $etudiants_tout=Etudiant::where('grp',$liste_groupes)->get(['nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse','numero'])->toArray();
+                }
+                
+            }
+            default: {
+                return response(null,Response::HTTP_NOT_FOUND);
+            break;
             }
         }
         return array('consultation'=>$etudiants,'form'=>$etudiants_tout);
@@ -143,7 +154,7 @@ class EtudiantController extends Controller
      */
     public function store(EtudiantRequest $request) { //INSCRIT UN ETUDIANT DANS LA BDD
         $validator = Validator::make($request->all(),$request->rules(),$request->messages());
-        if ($validator->fails()) return $validator->errors();
+        if ($validator->fails()) return response()->json($validator->errors());
         else {
             if (!(Etudiant::where('numero',$request->input('num'))->first())) {
                 $etudiant = new Etudiant();
