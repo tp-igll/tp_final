@@ -19,17 +19,17 @@ class EtudiantTest extends TestCase
             'num'=>'0555223312'
         ];
     }
-    /** @test */
     /**
      * un_etudiant_peut_etre_inscrit_par_un_formulaire
      *
      * @return void
      */
+    /** @test */
     public function un_etudiant_peut_etre_inscrit_par_un_formulaire()
     {
-        $response=$this->post('/inscription',array_merge($this->data(),['num'=>'0555273367']));
+        $response=$this->post('/inscription',array_merge($this->data(),['num'=>'0558293767']));
         $this->assertCount(Etudiant::count(),Etudiant::all());
-        $response->assertStatus(201);
+        $response->assertStatus(226);
     }
 
     /** @test */
@@ -99,26 +99,52 @@ class EtudiantTest extends TestCase
     //****** Tests de liste: **********/
     /** @test */
     public function admin_peut_lister_tous_les_etudiants () {
-        $id=0; //l'id de l'admin est par défaut 0
-        $this->get('liste/'+$id)->assertOk();
+        $id=1; //l'id de l'admin est par défaut 1
+        $this->get('liste/'.$id)
+        ->assertJsonStructure([
+            'consultation'=> [
+                '*' => [
+                    'nom','prenom','grp','email','sect','niv','matricule'
+                ],
+            ],
+            'form' => [
+                '*' => [
+                    'nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse','numero'
+                ],
+                
+            ]
+        ]);
     }
 
     /** @test */
     public function prof_peut__lister_ses_etudiants () {
-        $id=1; //l'id de l'admin est par défaut 0
-        $this->get('liste/'+$id)->assertStatus(404);
+        $id=2; //id d'un prof déjà existant dans la bdd (Mr. Dib)
+        $this->get('liste/'.$id)
+        ->assertJsonStructure([
+            'consultation'=> [
+                '*' => [
+                    'nom','prenom','grp','email','sect','niv','matricule'
+                ],
+            ],
+            'form' => [
+                '*' => [
+                    'nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse','numero'
+                ],
+                
+            ]
+        ]);
     }
 
     /** @test */
     public function ne_peut_pas_lister_avec_id_inexistant () {
-        $id=-1; //l'id de l'admin est par défaut 0
-        $this->get('liste/'+$id)->assertStatus(404);
+        $id=-1; 
+        $this->get('liste/'.$id)->assertStatus(404);
     }
 
     /** @test */
     public function prof_ne_peut_pas_lister_avec_groupe_inexistant () {
-        $id=4; //l'id de l'admin est par défaut 0
-        $this->get('liste/'+$id)->assertStatus(404);
+        $id=4; 
+        $this->get('liste/'.$id)->assertStatus(404);
     }
     
 }

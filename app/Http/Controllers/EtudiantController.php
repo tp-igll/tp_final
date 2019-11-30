@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\EtudiantRequest;
-use App\Etudiant;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Validator;
+use App\Etudiant;
+use App\User;
+use App\Prof;
 
 
 class EtudiantController extends Controller
@@ -85,7 +87,10 @@ class EtudiantController extends Controller
                 return mt_rand(1,2);
             break;
             }
-            case "3CS": {break;}
+            case "3CS": {
+                return mt_rand(1,2);
+            break;
+            }
             default : {
                 if ($sect=='A') return mt_rand(1,3);
                 else if ($sect=='B') return mt_rand(1,3)+3;
@@ -112,33 +117,49 @@ class EtudiantController extends Controller
      */
     public function index($id) { //Récupère tous les étudiants dans un tableau $etudiants
         $type=User::where('id',$id)->value('type');
-        switch ($type) {
-            case 0: {//Cas d'admin
-                $etudiants = Etudiant::all(['nom','prenom','grp','email','sect','niv','matricule'])->toArray();
-                $etudiants_tout=Etudiant::all(['nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse','numero'])->toArray();
-            break;
-            } 
-            case 1: {//Cas d'un prof
-                $email=User::where('id',$id)->value('email');
-                if (!($email)) return response(null,Response::HTTP_NOT_FOUND);
-                else {
-                    $liste_groupes=Prof::where('email',$email)->value('liste_grp');
-                    if (!($liste_groupes)) return response(null,Response::HTTP_NOT_FOUND);
-                    $liste_sect=Prof::where('email',$email)->value('liste_sect');
+        if (is_null($type)) return response("id inexistant",Response::HTTP_NOT_FOUND);
+        else  {
+            switch ($type) {
+                case 0: {//Cas d'admin
+                    $etudiants = Etudiant::all(['nom','prenom','grp','email','sect','niv','matricule'])->toArray();
+                    $etudiants_tout=Etudiant::all(['nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse','numero'])->toArray();
+                break;
+                } 
+                case 1: {//Cas d'un prof
+                    $email=User::where('id',$id)->value('email');
+                    $grp_sect=Prof::where('email',$email)->first(['liste_grp','liste_sect']);
                     $etudiants=Etudiant::where([
-                       ['sect',$liste_sect],
-                       ['grp',$liste_groupes],
+                       ['sect',$grp_sect['liste_sect']],
+                       ['grp',$grp_sect['liste_grp']],
                     ])->get(['nom','prenom','grp','email','sect','niv','matricule'])->toArray();
-                    $etudiants_tout=Etudiant::where('grp',$liste_groupes)->get(['nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse','numero'])->toArray();
+                    if (!($etudiants)) return response(null,Response::HTTP_NOT_FOUND);
+                    $etudiants_tout=Etudiant::where([
+                        ['sect',$grp_sect['liste_sect']],
+                        ['grp',$grp_sect['liste_grp']],
+                     ])->get(['nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse','numero'])->toArray();           
+                break;
                 }
-                
+                case 2: {//Cas d'un étudiant
+                    $email=User::where('id',$id)->value('email');
+                    if (!($email)) return response(null,Response::HTTP_NOT_FOUND);
+                    else {
+                        $groupe=Etudiant::where('email',$email)->value('grp');
+                        $sect=Prof::where('email',$email)->value('sect');
+                        $etudiants=Etudiant::where([
+                           ['sect',$sect],
+                           ['grp',$groupe],
+                        ])->get(['nom','prenom','grp','email','sect','niv','matricule'])->toArray();
+                        $etudiants_tout=Etudiant::where([
+                            ['sect',$sect],
+                            ['grp',$groupe],
+                         ])->get(['nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse','numero'])->toArray();
+                    }
+                break;
+                }
             }
-            default: {
-                return response(null,Response::HTTP_NOT_FOUND);
-            break;
-            }
+            return array('consultation'=>$etudiants,'form'=>$etudiants_tout);
         }
-        return array('consultation'=>$etudiants,'form'=>$etudiants_tout);
+        
     }
 
     public function create() {
