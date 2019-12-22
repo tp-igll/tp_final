@@ -126,18 +126,8 @@ class EtudiantController extends Controller
                 break;
                 } 
                 case 1: {//Cas d'un prof
-                    $email=User::where('id',$id)->value('email');
-                    $grp_sect=Prof::where('email',$email)->first(['liste_grp','liste_sect']);
-                    $etudiants=Etudiant::where([
-                       ['sect',$grp_sect['liste_sect']],
-                       ['grp',$grp_sect['liste_grp']],
-                    ])->get(['nom','prenom','grp','email','sect','niv','matricule'])->toArray();
-                    if (!($etudiants)) return response(null,Response::HTTP_NOT_FOUND);
-                    $etudiants_tout=Etudiant::where([
-                        ['sect',$grp_sect['liste_sect']],
-                        ['grp',$grp_sect['liste_grp']],
-                     ])->get(['nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse','numero'])->toArray();           
-                break;
+                    return response(null,Response::HTTP_NOT_FOUND);
+                    break;
                 }
                 case 2: {//Cas d'un étudiant
                     $email=User::where('id',$id)->value('email');

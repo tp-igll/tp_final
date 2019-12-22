@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 use App\Prof;
 use App\User;
 use App\Etudiant;
@@ -10,17 +11,16 @@ use App\Etudiant;
 class ProfController extends Controller
 {
     public function index ($id) { //Affiche la liste d'étudiants du prof dont l'id=$id
-        $email=User::where('id',$id)->value('email');
+        $prof=User::where('id',$id)->first(['email','type']);
+        if ($prof['type']!=1) return response(null, Response::HTTP_NOT_FOUND); //l'id n'est pas d'un prof
+        $email=$prof['email'];
         $grp_sect=Prof::where('email',$email)->first(['liste_grp','liste_sect']);
-        
-
         if ($grp_sect['liste_sect']!=null) {
               //Lister les étudiants de sa section
               $liste_sections=strtok($grp_sect['liste_sect'],","); //Forme de liste_sections = section1,section2,...
               $premier=true; 
               $donne_niveau=true; //Savoir si on est au niveau ou section
               while ($liste_sections!==false) {
-                
                   $section=strtok($liste_sections,"/"); // Forme de chaque section = niveau/section
                   while ($section!==false){
                       if ($donne_niveau) {
@@ -37,8 +37,7 @@ class ProfController extends Controller
                       $etudiants1=Etudiant::where([ ['sect',$sect] , ['niv',$niv], ])
                       ->get(['nom','prenom','grp','email','sect','niv','matricule'])->toArray();
                       $etudiants_tout1=Etudiant::where([ ['sect',$sect] , ['niv',$niv], ])
-                      ->get(['nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse','numero'])->toArray();
-                      
+                      ->get(['nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse','numero'])->toArray();             
                       $premier=false;
                   }
                   else {
@@ -46,8 +45,8 @@ class ProfController extends Controller
                       ->get(['nom','prenom','grp','email','sect','niv','matricule'])->toArray();
                       $etudiants_tout_tmp=Etudiant::where([ ['sect',$sect] , ['niv',$niv], ])
                       ->get(['nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse','numero'])->toArray();
-                      array_merge($etudiants1,$etudiants_tmp);
-                      array_merge($etudiants_tout1,$etudiants_tout_tmp);
+                      $etudiants1=array_merge($etudiants1,$etudiants_tmp);
+                      $etudiants_tout1=array_merge($etudiants_tout1,$etudiants_tout_tmp);
                   }
                   $liste_sections=strtok(",");
               }
@@ -73,7 +72,6 @@ class ProfController extends Controller
                 }
                 
                 if ($premier) {
-                    
                     $etudiants2=Etudiant::where([ ['grp',$grp] , ['niv',$niv] ])
                     ->get(['nom','prenom','grp','email','sect','niv','matricule'])->toArray();
                     $etudiants_tout2=Etudiant::where([ ['grp',$grp] , ['niv',$niv] ])
@@ -85,26 +83,32 @@ class ProfController extends Controller
                     ->get(['nom','prenom','grp','email','sect','niv','matricule'])->toArray();
                     $etudiants_tout_tmp=Etudiant::where([ ['grp',$grp] , ['niv',$niv] ])
                     ->get(['nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse','numero'])->toArray();
-                    array_merge($etudiants2,$etudiants_tmp);
-                    array_merge($etudiants_tout2,$etudiants_tout_tmp);
+                    $etudiants2=array_merge($etudiants2,$etudiants_tmp);
+                    $etudiants_tout2=array_merge($etudiants_tout2,$etudiants_tout_tmp);
                 }
                 $liste_groupes=strtok(",");
             }
         }
         if (($grp_sect['liste_grp']!=null) && ($grp_sect['liste_sect']!=null)) {
-            
-            array_merge($etudiants1,$etudiants2);
-            $etudiants=$etudiants1;return $etudiants;
-            array_merge($etudiants_tout1,$etudiants_tout2);
-            $etudiants_tout=$etudiants_tout1;
+            if (($etudiants2!=null) && ($etudiants1!=null)) {
+                $etudiants=array_merge($etudiants1,$etudiants2);
+                $etudiants_tout=array_merge($etudiants_tout1,$etudiants_tout2);
+            }
+            else return response(null, Response::HTTP_NOT_FOUND);       
         }
         else if ($grp_sect['liste_grp']!=null){
-            $etudiants=$etudiants2;
-            $etudiants_tout=$etudiants_tout2;
+            if ($etudiants2!=null){
+                $etudiants=$etudiants2;
+                $etudiants_tout=$etudiants_tout2;
+            }
+            else return response(null, Response::HTTP_NOT_FOUND);  //groupe inexistant à l'esi
         }
         else {
-            $etudiants=$etudiants1;
-            $etudiants_tout=$etudiants_tout1;
+            if ($etudiants2!=null) {
+                $etudiants=$etudiants1;
+                $etudiants_tout=$etudiants_tout1;
+            }
+            else return response(null, Response::HTTP_NOT_FOUND); //section inexistante à l'esi
         }
         return array('consultation'=>$etudiants,'form'=>$etudiants_tout);
     }

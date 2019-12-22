@@ -5,7 +5,7 @@ namespace Tests\Unit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Etudiant;
-//$this->assertTrue(true);
+
 
 class EtudiantTest extends TestCase
 {
@@ -100,26 +100,7 @@ class EtudiantTest extends TestCase
     /** @test */
     public function admin_peut_lister_tous_les_etudiants () {
         $id=1; //l'id de l'admin est par défaut 1
-        $this->get('liste/'.$id)
-        ->assertJsonStructure([
-            'consultation'=> [
-                '*' => [
-                    'nom','prenom','grp','email','sect','niv','matricule'
-                ],
-            ],
-            'form' => [
-                '*' => [
-                    'nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse','numero'
-                ],
-                
-            ]
-        ]);
-    }
-
-    /** @test */
-    public function prof_peut__lister_ses_etudiants () {
-        $id=2; //id d'un prof déjà existant dans la bdd (Mr. Dib)
-        $this->get('liste/'.$id)
+        $this->get('liste_other/'.$id)
         ->assertJsonStructure([
             'consultation'=> [
                 '*' => [
@@ -138,13 +119,7 @@ class EtudiantTest extends TestCase
     /** @test */
     public function ne_peut_pas_lister_avec_id_inexistant () {
         $id=-1; 
-        $this->get('liste/'.$id)->assertStatus(404);
-    }
-
-    /** @test */
-    public function prof_ne_peut_pas_lister_avec_groupe_inexistant () {
-        $id=4; 
-        $this->get('liste/'.$id)->assertStatus(404);
+        $this->get('liste_other/'.$id)->assertStatus(404);
     }
     
 }
