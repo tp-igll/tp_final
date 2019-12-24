@@ -152,10 +152,6 @@ class EtudiantController extends Controller
         
     }
 
-    public function create() {
-        return view('app');
-    }
-
     /**
      * La fonction store inscrit un étudiant dans la base de données
      *

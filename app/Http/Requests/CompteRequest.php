@@ -24,7 +24,9 @@ class CompteRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'email' => 'required|email|max:30|unique:users',
+            'mdp' => 'required|min:6'
         ];
     }
+    
 }
