@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link href="css.css" rel="stylesheet">
+  <link href="materialdesignicons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="vuetify.min.css">
+  <link href="sss.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+<body>
+ <div id="app">
+  <span class="bg"></span>
+  <v-app id="inspire">
+    <v-content>
+      <v-container
+        fluid
+        fill-height
+      >
+        <v-layout
+          align-center
+          justify-center
+        >
+          <v-flex
+            xs12
+            sm8
+            md4
+          >
+            <v-card class="elevation-12">
+              <v-toolbar
+                color="#004d00"
+                dark
+                flat
+              >
+                <v-toolbar-title>Connexion</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-tooltip bottom>
+                  
+                  
+                
+              </v-toolbar>
+              <v-card-text>
+                <v-form ref="form">
+                  <v-text-field
+                    label="Adresse email"
+                    name="login"
+                    prepend-icon="mail"
+                    type="text"
+                    v-model="login"
+                    :rules="inputrules"
+                  ></v-text-field>
+
+                  <v-text-field
+                    v-model="password"
+                    label="Mot de passe"
+                    name="password"
+                    prepend-icon="lock"
+                    type="password"
+                    :rules="inputruless"
+                  ></v-text-field>
+                </v-form>
+              </v-card-text>
+              <v-card-actions class="justify-center">
+                
+                <v-btn  color="green" v-on:click="submit">Connexion </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-flex>
+        </v-layout>
+      </v-container>
+    </v-content>
+  </v-app>
+</div>
+<script src="vue.js"></script>
+  <script src="vuetify.js"></script>
+  
+
+  <script>
+    
+   new Vue({
+  el: '#app',
+  vuetify: new Vuetify(),
+      data:{
+          login:'',
+          password:'',
+          inputrules:[
+          v=> v.length >=3 || 'Veuillez introduire une adresse mail valide.'
+          ],
+          inputruless:[
+          v=> v.length >=1 || 'Veuillez introduire un mot de passe valide.'
+          ]
+      },
+      methods:{
+        submit: function(){
+          if (this.$refs.form.validate()) {
+            console.log(this.login, this.password)
+          }
+        }
+      }
+    })
+  </script>
+
+<style type="text/css">
+  .bg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: url( 'backg.jpg') no-repeat center center;
+    background-size: cover;
+    
+    transform: scale(1.1);
+  }
+</style>
+</body>
+</html>
