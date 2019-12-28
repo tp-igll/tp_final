@@ -122,4 +122,22 @@ class EtudiantTest extends TestCase
         $this->get('liste_other/'.$id)->assertStatus(404);
     }
     
+    /** @test */
+    public function etudiant_peut_voir_la_liste_de_son_groupe () {
+        $id=5; //l'id de l'étudiant
+        $this->get('liste_other/'.$id)
+        ->assertJsonStructure([
+            'consultation'=> [
+                '*' => [
+                    'nom','prenom','grp','email','sect','niv','matricule'
+                ],
+            ],
+            'form' => [
+                '*' => [
+                    'nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse','numero'
+                ],
+                
+            ]
+        ]);
+    }
 }

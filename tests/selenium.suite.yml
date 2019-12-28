@@ -1,0 +1,22 @@
+class_name: SeleniumGuy
+path:
+    tests: tests
+    log: tests/_log
+    data: tests/_data
+    helpers: tests/_helpers
+settings:
+    log: true
+modules:
+    enabled:
+       -SeleniumHelper
+       -Selenium2
+    config:
+       Selenium2:
+           url: http://localhost:8000/
+           browser: chrome
+           capabilities:
+              unexpectedAlertBehaviour: 'accept'
+           delay: 400
+           port: 4444
+       PhpBrowser:
+           url: http://localhost:8000/

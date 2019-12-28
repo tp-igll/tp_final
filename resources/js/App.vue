@@ -1,6 +1,6 @@
 <template>
   <v-app class="grey lighten-4">
-    <Login />
+    <Navbar />
     <v-content class="mx-4 mb-4 ">
       <router-view></router-view>
     </v-content>
@@ -9,10 +9,10 @@
 
 <script>
 
-import Login from './components/Login'
+import Navbar from './components/Navbar'
 export default {
   name: 'App',
-  components: {Login},
+  components: {Navbar},
 
 
   data: () => ({

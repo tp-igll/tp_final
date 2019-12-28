@@ -134,14 +134,17 @@ class EtudiantController extends Controller
                     if (!($email)) return response(null,Response::HTTP_NOT_FOUND);
                     else {
                         $groupe=Etudiant::where('email',$email)->value('grp');
-                        $sect=Prof::where('email',$email)->value('sect');
+                        $sect=Etudiant::where('email',$email)->value('sect');
+                        $niv=Etudiant::where('email',$email)->value('niv');
                         $etudiants=Etudiant::where([
                            ['sect',$sect],
                            ['grp',$groupe],
+                           ['niv',$niv],
                         ])->get(['nom','prenom','grp','email','sect','niv','matricule'])->toArray();
                         $etudiants_tout=Etudiant::where([
                             ['sect',$sect],
                             ['grp',$groupe],
+                            ['niv',$niv],
                          ])->get(['nom','prenom','grp','email','sect','niv','matricule','date_naissance','adresse','numero'])->toArray();
                     }
                 break;

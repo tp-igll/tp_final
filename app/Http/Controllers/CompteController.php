@@ -11,8 +11,12 @@ class CompteController extends Controller
         return User::where('id',$id)->value('type');
     }
 
+    public function genererId() {
+        return mt_rand(1,User::count());
+    }
+
     public function authentification(CompteRequest $request) {
-        $email=$request->input('email');
+        $email=$request->input('login');
         $mdp=$request->input('mdp');
         $real_mdp=User::where('email',$email)->first('password');
         if ($real_mdp==null) return -1;//code d'erreur du cas d'un email inexistant

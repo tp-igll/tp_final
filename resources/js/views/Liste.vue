@@ -202,6 +202,8 @@
         { text: 'Actions', value: 'action', sortable: false },
       ],
       Etudiants: [],
+      id: -1,
+      bool: true,
       editedIndex: -1,
       editedItem: {
         nom: '',
@@ -247,14 +249,15 @@
     },
 
     methods: {
-      initialize () {
-        var id=4;
+      initialize () {    
+        this.id=5//Math.floor(Math.random() * Math.floor(5))+1;
         var type;
-        axios.get('/type/'+id).then(response => {
+        var _this=this;
+        axios.get('/type/'+_this.id).then(response => {
           type=response.data
           switch(type){
-          case 1:{
-               axios.get('/liste_prof/'+id).then(response => {
+          case 1: { //Cas d'un prof
+               axios.get('/liste_prof/'+_this.id).then(response => {
                   this.Etudiants = response.data['consultation']
                   this.Etudiants_tout = response.data['form']
                   console.log(this.Etudiants_tout)
@@ -262,7 +265,8 @@
                break;
           }
           default: {
-                axios.get('/liste_other/'+id).then(response => {
+               if (type==0) _this.bool=false;
+                axios.get('/liste_other/'+_this.id).then(response => {
                   this.Etudiants = response.data['consultation']
                   this.Etudiants_tout = response.data['form']
                   console.log(this.Etudiants_tout)
