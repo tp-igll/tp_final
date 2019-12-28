@@ -139,7 +139,7 @@
         small
         class="mr-2"
         @click="editItem(item)"
-        :disabled="this.bool"
+        :disabled="true"
       >
         mdi-account-edit
       </v-icon>
@@ -154,7 +154,7 @@
         small
         class="mr-2"
         @click="deleteItem(item)"
-        :disabled="this.bool"
+        :disabled="true"
       >
         mdi-delete
       </v-icon>
@@ -252,7 +252,7 @@
 
     methods: {
       initialize () {    
-        this.id=5//Math.floor(Math.random() * Math.floor(5))+1;
+        this.id=1//Math.floor(Math.random() * Math.floor(5))+1;
         var type;
         var _this=this;
         axios.get('/type/'+_this.id).then(response => {
@@ -267,7 +267,7 @@
                break;
           }
           default: {
-               if (type==0) _this.bool=false;
+               if (type==0) _this.bool=false; //ta3 disabled 
                 axios.get('/liste_other/'+_this.id).then(response => {
                   this.Etudiants = response.data['consultation']
                   this.Etudiants_tout = response.data['form']
