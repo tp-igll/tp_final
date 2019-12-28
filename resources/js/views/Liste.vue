@@ -139,6 +139,7 @@
         small
         class="mr-2"
         @click="editItem(item)"
+        :disabled="this.bool"
       >
         mdi-account-edit
       </v-icon>
@@ -153,6 +154,7 @@
         small
         class="mr-2"
         @click="deleteItem(item)"
+        :disabled="this.bool"
       >
         mdi-delete
       </v-icon>
