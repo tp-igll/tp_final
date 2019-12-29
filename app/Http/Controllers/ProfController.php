@@ -10,6 +10,13 @@ use App\Etudiant;
 
 class ProfController extends Controller
 {
+    /**
+     * La fonction index affiche la liste des étudiants d'un prof dont l'id est égale a l'id passée en parametres
+     *
+     * @param  mixed $id
+     *
+     * @return $etudiants Tableau qui contient la liste des étudiants du prof
+     */
     public function index ($id) { //Affiche la liste d'étudiants du prof dont l'id=$id
         $prof=User::where('id',$id)->first(['email','type']);
         if ($prof['type']!=1) return response(null, Response::HTTP_NOT_FOUND); //l'id n'est pas d'un prof
