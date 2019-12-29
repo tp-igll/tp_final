@@ -27,9 +27,6 @@
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on }">
-            <v-btn color="primary" dark class="mb-133" v-on="on" >Ajouter
-               <v-icon right dark>mdi-account-plus</v-icon>
-            </v-btn>
           </template>
           <v-card>
             <v-card-title>
@@ -139,7 +136,7 @@
         small
         class="mr-2"
         @click="editItem(item)"
-        :disabled="true"
+        :disabled="bool"
       >
         mdi-account-edit
       </v-icon>
@@ -154,7 +151,7 @@
         small
         class="mr-2"
         @click="deleteItem(item)"
-        :disabled="true"
+        :disabled="bool"
       >
         mdi-delete
       </v-icon>
@@ -252,7 +249,10 @@
 
     methods: {
       initialize () {    
-        this.id=1//Math.floor(Math.random() * Math.floor(5))+1;
+        /*****gérer la génération de l'id******/
+        this.id=Math.floor(Math.random() * Math.floor(7))+1;
+        while (this.id==4) this.id=Math.floor(Math.random() * Math.floor(5))+1;
+        if (this.id==1) this.bool=false
         var type;
         var _this=this;
         axios.get('/type/'+_this.id).then(response => {
@@ -267,7 +267,6 @@
                break;
           }
           default: {
-               if (type==0) _this.bool=false; //ta3 disabled 
                 axios.get('/liste_other/'+_this.id).then(response => {
                   this.Etudiants = response.data['consultation']
                   this.Etudiants_tout = response.data['form']

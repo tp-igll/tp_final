@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  sam. 28 déc. 2019 à 18:22
+-- Généré le :  Dim 29 déc. 2019 à 18:51
 -- Version du serveur :  5.7.24
 -- Version de PHP :  7.2.14
 
@@ -124,16 +124,17 @@ CREATE TABLE IF NOT EXISTS `profs` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `profs`
 --
 
 INSERT INTO `profs` (`id`, `nom`, `prenom`, `email`, `liste_grp`, `liste_sect`, `created_at`, `updated_at`) VALUES
-(1, 'dib', 'ahmed', 'dib@esi.dz', '2CS/1', '2CP/A', NULL, NULL),
+(1, 'dib', 'ahmed', 'dib@esi.dz', ',1CP/3', '2CP/A', NULL, NULL),
 (2, 'haddadou', 'hamid', 'hamid@esi.dz', '2CS/1', '1CP/A', NULL, NULL),
-(3, 'kheloufi', 'khr', 'kheloufi@esi.dz', '2CP/15', '1CS/D', NULL, NULL);
+(3, 'kheloufi', 'khr', 'kheloufi@esi.dz', '2CP/15', '1CS/D', NULL, NULL),
+(4, 'ali', 'ali', 'ali@esi.dz', '2CS/2', '1CP/A', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -154,7 +155,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email_unique` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `users`
@@ -165,7 +166,9 @@ INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `ty
 (2, 'dib', 'dib@esi.dz', NULL, '020782', 1, NULL, NULL, NULL),
 (3, 'haddadou', 'hamid@esi.dz', NULL, '020782', 1, NULL, NULL, NULL),
 (4, 'kheloufi', 'kheloufi@esi.dz', NULL, '020782', 1, NULL, NULL, NULL),
-(5, 'mouri', 'js_mouri@esi.dz', NULL, '12345', 2, NULL, NULL, NULL);
+(5, 'mouri', 'js_mouri@esi.dz', NULL, '12345', 2, NULL, NULL, NULL),
+(6, 'ali', 'ali@esi.dz', NULL, '122', 1, NULL, NULL, NULL),
+(7, 'ghaouat', 'jm_ghaouat@esi.dz', NULL, 'lol', 2, NULL, NULL, NULL);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
