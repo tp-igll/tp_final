@@ -7,20 +7,23 @@ use App\User;
 
 class CompteController extends Controller
 {
+    /**
+     * La fonction getType retourne le type du compte dont l'id est égale a l'id passé en parametres
+     *
+     * @param  mixed $id
+     *
+     * @return $type le type du compte
+     */
     public function getType($id){ //Retourne le type du compte dont l'id = $id
         return User::where('id',$id)->value('type');
     }
 
+    /**
+     * La fonction genererId genere un id aléatoirement en donnant un chiffre entre 1 et le nombre des utilisateurs
+     *
+     * @return $id l'id généré
+     */
     public function genererId() {
         return mt_rand(1,User::count());
-    }
-
-    public function authentification(CompteRequest $request) {
-        $email=$request->input('login');
-        $mdp=$request->input('mdp');
-        $real_mdp=User::where('email',$email)->first('password');
-        if ($real_mdp==null) return -1;//code d'erreur du cas d'un email inexistant
-        else if ($mdp!=$real_mdp) return 0; //code d'erreur du cas d'un mdp incorrect
-        else return User::where('email',$email)->value('id');
     }
 }
