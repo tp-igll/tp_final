@@ -27,9 +27,9 @@ class EtudiantTest extends TestCase
     /** @test */
     public function un_etudiant_peut_etre_inscrit_par_un_formulaire()
     {
-        $response=$this->post('/inscription',array_merge($this->data(),['num'=>'0558293767']));
+        $response=$this->post('/inscription',array_merge($this->data(),['num'=>'0558293867']));
         $this->assertCount(Etudiant::count(),Etudiant::all());
-        $response->assertStatus(226);
+        $response->assertStatus(201);
     }
 
     /** @test */
